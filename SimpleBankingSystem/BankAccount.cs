@@ -9,7 +9,7 @@ namespace SimpleBankingSystem
     class BankAccount
     {
         public int Number { get; set; }
-        protected decimal Balance { get;  set; }
+        public decimal Balance { get;  set; }
         public string Name { get; set; }
         public void CreateAccount(int number, string name, decimal balance)
         {

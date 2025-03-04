@@ -8,7 +8,14 @@ namespace SimpleBankingSystem
 {
     class SavingsAccount: BankAccount
     {
-        public int Interest { get; set; }
+        public decimal Interest { get; set; }
+        public void CreateAccount(int number, string name, decimal balance, decimal interest)
+        {
+            Number = number;
+            Name = name;
+            Balance = balance;
+            Interest = interest;
+        }
         public void ApplyInterest()
         {
             Balance = Balance+(Balance*(Interest/100.00M));
