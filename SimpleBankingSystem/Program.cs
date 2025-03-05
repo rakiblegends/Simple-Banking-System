@@ -1,8 +1,10 @@
-﻿namespace SimpleBankingSystem;
+﻿using System.Net.Sockets;
+
+namespace SimpleBankingSystem;
 
 class Program
 {
-    static Dictionary<int, BankAccount> accounts = new Dictionary<int, BankAccount>();
+    static Dictionary<int, BankAccount> accounts = new Dictionary<int, BankAccount>(); //Generic
 
     static void ShowScreen()
     {
@@ -16,11 +18,25 @@ class Program
 
     }
 
-    static int GetAccountType()
+    delegate int GetAccountType();
+    public static int AccountType()
     {
-        Console.Write("Enter account type (1 - Regular, 2 - Savings): ");
-        int option = Convert.ToInt32(Console.ReadLine());
-        return option;
+        while (true)
+        {
+            try
+            {
+                //Console.Write("Enter account type (1 - Regular, 2 - Savings): ");
+                int option = int.Parse(Console.ReadLine());
+                if(option>=1 && option<=2)
+                {
+                    return option;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Invalid Number! Try Again.");
+            }
+        }
     }
 
 
@@ -176,7 +192,8 @@ class Program
             {
                 case 1:
                     {
-                        int type = GetAccountType();
+                        GetAccountType del = AccountType;
+                        int type = del(); // Using delegates here.
                         CreateAccount(type);
                     }
                     break;
