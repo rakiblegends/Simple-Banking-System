@@ -6,9 +6,64 @@ class Program
 {
     static Dictionary<int, BankAccount> accounts = new Dictionary<int, BankAccount>(); //Generic
 
+
+    //Validating the number is integer or not.
+    public static int ValidateInt(string message, int range1, int range2)
+    {
+        while (true)
+        {
+            try
+            {
+                Console.Write(message);
+                int input = int.Parse(Console.ReadLine());
+                if (input>=range1 && input<=range2)
+                {
+                    return input;
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Invalid input. Please try again!");
+            }
+        }
+    }
+
+    // Validating for deciaml
+    public static decimal ValidateDecimal(string message)
+    {
+        while (true)
+        {
+            try
+            {
+                Console.Write(message);
+                decimal balance = decimal.Parse(Console.ReadLine());
+                if (balance<0)
+                {
+                    throw new Exception();
+                }
+                else
+                {
+                    return balance;
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Invalid input. Please try again!");
+            }
+        }
+    }
+
+
+
+
+
     static void ShowScreen()
     {
-        Console.WriteLine("Simple Banking System");
+        Console.WriteLine("\nSimple Banking System");
         Console.WriteLine("1. Create Account");
         Console.WriteLine("2. Deposit");
         Console.WriteLine("3. Withdraw");
@@ -21,22 +76,9 @@ class Program
     delegate int GetAccountType();
     public static int AccountType()
     {
-        while (true)
-        {
-            try
-            {
-                //Console.Write("Enter account type (1 - Regular, 2 - Savings): ");
-                int option = int.Parse(Console.ReadLine());
-                if(option>=1 && option<=2)
-                {
-                    return option;
-                }
-            }
-            catch
-            {
-                Console.WriteLine("Invalid Number! Try Again.");
-            }
-        }
+        string message = "Enter account type (1 - Regular, 2 - Savings): ";
+        int option = ValidateInt(message, 1, 2);
+        return option;
     }
 
 
@@ -45,39 +87,45 @@ class Program
     // Create Account Module
     static void CreateAccount(int type)
     {
-        Console.Write("Enter Account Number: ");
-        int number = Convert.ToInt32(Console.ReadLine());
-        Console.Write("Enter Account Holder Name: ");
-        string name = Console.ReadLine();
-        Console.Write("Enter Initial Balance: ");
-        decimal balance = Convert.ToDecimal(Console.ReadLine());
-        if (type==1)
+
+        int number;
+        string message;
+        while(true)
         {
-            if (!(accounts.ContainsKey(number)) )
-            {
-                BankAccount account = new BankAccount();
-                account.CreateAccount(number, name, balance);
-                Console.WriteLine("Regular account created successfully!");
-                accounts.Add(number, account);
-            }
-            else
+            message = "Enter Account Number: ";
+            number = ValidateInt(message, 0, 100000);
+
+            if (accounts.ContainsKey(number))
             {
                 Console.WriteLine("Duplicate Account!");
             }
-        }else if (type==2)
-        {
-            if (!(accounts.ContainsKey(number))){
-                Console.Write("Enter interest rate (%): ");
-                decimal interest_rate = Convert.ToDecimal(Console.ReadLine());
-                SavingsAccount account = new SavingsAccount();
-                account.CreateAccount(number, name, balance, interest_rate);
-                accounts.Add(number, account);
-                Console.WriteLine("Savings account created successfully!");
-            }
             else
             {
-                Console.WriteLine("Duplicate account");
+                break;
             }
+        }
+        
+        Console.Write("Enter Account Holder Name: ");
+        string name = Console.ReadLine();
+
+        message = "Enter Initial Balance: ";
+        decimal balance = ValidateDecimal(message);
+       
+        
+        if (type==1)
+        {
+            BankAccount account = new BankAccount();
+            account.CreateAccount(number, name, balance);
+            Console.WriteLine("\nRegular account created successfully!");
+            accounts.Add(number, account);
+        }else if (type==2)
+        {
+            message = "Enter interest rate (%): ";
+            decimal interest_rate = ValidateDecimal(message);
+            SavingsAccount account = new SavingsAccount();
+            account.CreateAccount(number, name, balance, interest_rate);
+            accounts.Add(number, account);
+            Console.WriteLine("\nSavings account created successfully!");
         }
     }
 
@@ -88,11 +136,16 @@ class Program
 
     static void CheckBalance()
     {
-        Console.Write("Enter Account Number: ");
-        int number = Convert.ToInt32(Console.ReadLine());
+
+        string message = "Enter Account Number: ";
+        int number = ValidateInt(message,0,100000);
         if (accounts.ContainsKey(number))
         {
-            Console.WriteLine("Current Balance: $"+accounts[number].CheckBalance());
+            Console.WriteLine("\nCurrent Balance: $"+accounts[number].CheckBalance());
+        }
+        else
+        {
+            Console.WriteLine("\nThere is no such account!");
         }
     }
 
@@ -103,20 +156,20 @@ class Program
 
     static void Deposit()
     {
-        Console.Write("Enter Account Number: ");
-        int number = Convert.ToInt32(Console.ReadLine());
-        Console.Write("Enter Deposited Amount: ");
-        decimal amount = Convert.ToDecimal(Console.ReadLine());
+        string message = "Enter Account Number: ";
+        int number = ValidateInt(message,0,100000);
+        message = "Enter Deposited Amount: ";
+        decimal amount = ValidateDecimal(message);
 
         if (accounts.ContainsKey(number))
         {
             accounts[number].Deposit(amount);
-            Console.WriteLine("Deposited $"+amount+" .New Balance $"+accounts[number].CheckBalance());
+            Console.WriteLine("\nDeposited $"+amount+" .New Balance $"+accounts[number].CheckBalance());
             
         }
         else
         {
-            Console.WriteLine("No such account! ");
+            Console.WriteLine("\nNo such account! ");
         }
     }
 
@@ -128,25 +181,25 @@ class Program
 
     static void Withdraw()
     {
-        Console.Write("Enter Account Number: ");
-        int number = Convert.ToInt32(Console.ReadLine());
-        Console.Write("Enter Withdraw Amount: ");
-        decimal amount = Convert.ToDecimal(Console.ReadLine());
+        string message = "Enter Account Number: ";
+        int number = ValidateInt(message,0,1000000);
+        message = "Enter Withdraw Amount: ";
+        decimal amount = ValidateDecimal(message);
 
         if (accounts.ContainsKey(number))
         {
             if (accounts[number].Withdraw(amount))
             {
-                Console.WriteLine("Withdraw successful! New Balance: $"+accounts[number].CheckBalance());
+                Console.WriteLine("\nWithdraw successful! New Balance: $"+accounts[number].CheckBalance());
             }
             else
             {
-                Console.WriteLine("Not enough balance to withdraw!");
+                Console.WriteLine("\nNot enough balance to withdraw!");
             }
         }
         else
         {
-            Console.WriteLine("No such account!");
+            Console.WriteLine("\nNo such account!");
         }
         
     }
@@ -158,16 +211,16 @@ class Program
 
     static void ApplyInterest()
     {
-        Console.Write("Enter account number: ");
-        int number = Convert.ToInt32(Console.ReadLine());
+        string message = "Enter account number: ";
+        int number = ValidateInt(message,0,1000000);
         if (accounts.ContainsKey(number))
         {
             decimal interest = accounts[number].ApplyInterest();
-            Console.WriteLine("Interest Applied: $" + interest + " .New Balance: $" + accounts[number].CheckBalance());
+            Console.WriteLine("\nInterest Applied: $" + interest + " .New Balance: $" + accounts[number].CheckBalance());
         }
         else
         {
-            Console.WriteLine("No such account!");
+            Console.WriteLine("\nNo such account!");
         }
     }
 
@@ -181,12 +234,12 @@ class Program
     {
         
 
-        var option = 0;
+        int option = 0;
         while (true)
         {
             ShowScreen();
-            Console.Write("Choose an option: ");
-            option = Convert.ToInt32(Console.ReadLine());
+            string message = "Choose an option: ";
+            option = ValidateInt(message,1,6);
             if (option==6) break;
             switch (option)
             {
