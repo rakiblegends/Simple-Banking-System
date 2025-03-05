@@ -3,7 +3,6 @@
 class Program
 {
     static Dictionary<int, BankAccount> accounts = new Dictionary<int, BankAccount>();
-    static Dictionary<int,SavingsAccount> accounts1 = new Dictionary<int, SavingsAccount>();
 
     static void ShowScreen()
     {
@@ -23,6 +22,9 @@ class Program
         int option = Convert.ToInt32(Console.ReadLine());
         return option;
     }
+
+
+
 
     // Create Account Module
     static void CreateAccount(int type)
@@ -44,7 +46,7 @@ class Program
             }
             else
             {
-                Console.WriteLine("Duplicate Account");
+                Console.WriteLine("Duplicate Account!");
             }
         }else if (type==2)
         {
@@ -53,7 +55,7 @@ class Program
                 decimal interest_rate = Convert.ToDecimal(Console.ReadLine());
                 SavingsAccount account = new SavingsAccount();
                 account.CreateAccount(number, name, balance, interest_rate);
-                accounts1.Add(number, account);
+                accounts.Add(number, account);
                 Console.WriteLine("Savings account created successfully!");
             }
             else
@@ -62,6 +64,8 @@ class Program
             }
         }
     }
+
+
 
 
     //Check Balance Module
@@ -74,11 +78,10 @@ class Program
         {
             Console.WriteLine("Current Balance: $"+accounts[number].CheckBalance());
         }
-        else if (accounts1.ContainsKey(number))
-        {
-            Console.WriteLine("Current Balance: $"+accounts1[number].CheckBalance());
-        }
     }
+
+
+
 
     //Deposit Module
 
@@ -95,16 +98,14 @@ class Program
             Console.WriteLine("Deposited $"+amount+" .New Balance $"+accounts[number].CheckBalance());
             
         }
-        else if (accounts1.ContainsKey(number))
-        {
-            accounts1[number].Deposit(amount);
-            Console.WriteLine("Deposited $"+amount+" .New Balance $"+accounts1[number].CheckBalance());
-        }
         else
         {
             Console.WriteLine("No such account! ");
         }
     }
+
+
+
 
 
     //Withdraw Module
@@ -113,27 +114,14 @@ class Program
     {
         Console.Write("Enter Account Number: ");
         int number = Convert.ToInt32(Console.ReadLine());
-        Console.Write("Enter Deposited Amount: ");
+        Console.Write("Enter Withdraw Amount: ");
         decimal amount = Convert.ToDecimal(Console.ReadLine());
 
         if (accounts.ContainsKey(number))
         {
             if (accounts[number].Withdraw(amount))
             {
-                accounts[number].Withdraw(amount);
                 Console.WriteLine("Withdraw successful! New Balance: $"+accounts[number].CheckBalance());
-            }
-            else
-            {
-                Console.WriteLine("Not enough balance to withdraw!");
-            }
-        }
-        else if (accounts1.ContainsKey(number))
-        {
-            if (accounts1[number].Withdraw(amount))
-            {
-                accounts1[number].Withdraw(amount);
-                Console.WriteLine("Withdraw successful! New Balance: $"+accounts1[number].CheckBalance());
             }
             else
             {
@@ -147,13 +135,24 @@ class Program
         
     }
 
+
+
+
     //ApplyInterest for Savings Account
 
     static void ApplyInterest()
     {
-        Console.WriteLine("Enter account number: ");
+        Console.Write("Enter account number: ");
         int number = Convert.ToInt32(Console.ReadLine());
-        accounts1[number].ApplyInterest();
+        if (accounts.ContainsKey(number))
+        {
+            decimal interest = accounts[number].ApplyInterest();
+            Console.WriteLine("Interest Applied: $" + interest + " .New Balance: $" + accounts[number].CheckBalance());
+        }
+        else
+        {
+            Console.WriteLine("No such account!");
+        }
     }
 
 
@@ -170,7 +169,7 @@ class Program
         while (true)
         {
             ShowScreen();
-            Console.WriteLine("Choose an option: ");
+            Console.Write("Choose an option: ");
             option = Convert.ToInt32(Console.ReadLine());
             if (option==6) break;
             switch (option)
