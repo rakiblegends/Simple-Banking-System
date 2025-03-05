@@ -40,7 +40,7 @@ namespace SimpleBankingSystem
         public decimal ApplyInterest()
         {
             decimal interest = (Balance*(Interest)/100.00M);
-            Balance = Balance+interest;
+            Balance = Balance+in;
             return interest;
         }
     }

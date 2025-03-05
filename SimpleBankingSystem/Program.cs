@@ -32,7 +32,7 @@ class Program
         }
     }
 
-    // Validating for deciaml
+    // Validating for deciaml and negative
     public static decimal ValidateDecimal(string message)
     {
         while (true)
@@ -156,21 +156,29 @@ class Program
 
     static void Deposit()
     {
-        string message = "Enter Account Number: ";
-        int number = ValidateInt(message,0,100000);
+        int number;
+        string message;
+        while (true)
+        {
+            message = "Enter Account Number: ";
+            number = ValidateInt(message, 0, 100000);
+
+            if (!accounts.ContainsKey(number))
+            {
+                Console.WriteLine("\nNo such account! ");
+            }
+            else
+            {
+                break;
+            }
+        }
+        
         message = "Enter Deposited Amount: ";
         decimal amount = ValidateDecimal(message);
 
-        if (accounts.ContainsKey(number))
-        {
-            accounts[number].Deposit(amount);
-            Console.WriteLine("\nDeposited $"+amount+" .New Balance $"+accounts[number].CheckBalance());
-            
-        }
-        else
-        {
-            Console.WriteLine("\nNo such account! ");
-        }
+        accounts[number].Deposit(amount);
+        Console.WriteLine("\nDeposited $"+amount+" .New Balance $"+accounts[number].CheckBalance());
+          
     }
 
 
@@ -181,26 +189,34 @@ class Program
 
     static void Withdraw()
     {
-        string message = "Enter Account Number: ";
-        int number = ValidateInt(message,0,1000000);
-        message = "Enter Withdraw Amount: ";
-        decimal amount = ValidateDecimal(message);
+        int number;
+        string message;
 
-        if (accounts.ContainsKey(number))
+        while (true)
         {
-            if (accounts[number].Withdraw(amount))
+            message = "Enter Account Number: ";
+            number = ValidateInt(message, 0, 1000000);
+            if (!accounts.ContainsKey(number))
             {
-                Console.WriteLine("\nWithdraw successful! New Balance: $"+accounts[number].CheckBalance());
+                Console.WriteLine("\nNo such account! ");
             }
             else
             {
-                Console.WriteLine("\nNot enough balance to withdraw!");
+                break;
             }
+        }
+        message = "Enter Withdraw Amount: ";
+        decimal amount = ValidateDecimal(message);
+
+        if (accounts[number].Withdraw(amount))
+        {
+            Console.WriteLine("\nWithdraw successful! New Balance: $"+accounts[number].CheckBalance());
         }
         else
         {
-            Console.WriteLine("\nNo such account!");
+            Console.WriteLine("\nNot enough balance to withdraw!");
         }
+        
         
     }
 
@@ -229,7 +245,7 @@ class Program
 
 
 
-
+    //Flow control of console from here.
     static void Main()
     {
         
